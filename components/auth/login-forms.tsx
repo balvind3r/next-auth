@@ -1,20 +1,19 @@
 import React from 'react'
-import { CardWrapper } from './card-wrapper';
+import { CardWrapper } from '@/components/auth/card-wrapper';
 
-interface Props {}
+// interface Props {}
 
-function LoginForm(props: Props) {
-    const {} = props
+function LoginForm() {
+    // const {} = props
 
     return (
-        <>
-            <CardWrapper headerLabel='Welcome Back' backButtonLabel="Don't have an account" backButtonHref="/auth/register" showSocial>
-                Ok wai
+        <div>
+            <CardWrapper headerLabel='Welcome Back' backButtonLabel="Don't have an account" 
+            backButtonHref="/auth/register" showSocial = {true}>
+                auth/login-forms.tsx
             </CardWrapper>
-        </>
+        </div>
     );
 }
 
 export {LoginForm}
-
-
