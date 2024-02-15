@@ -19,22 +19,31 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button"; 
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
+import { login } from "@/actions/login";
+import { useTransition } from "react"; 
+
 // interface Props {}
 
 function LoginForm() {
     // const {} = props
 
+    const [isPending, startTransition] = useTransition();
+
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
-            email: "",
-            password: "",
+            email: "abc@gmail.com",
+            password: "password",
         },
     });
 
     // This wil forward the 
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        console.log(values);
+        // console.log(values);
+        // Can use axios here...
+        startTransition(() => {
+            login(values);
+        })
     }
 
     return (
@@ -56,6 +65,8 @@ function LoginForm() {
                                         <FormControl>
                                             <Input
                                                 {...field}
+                                                disabled={isPending}
+                                                // Disables input while isPending
                                                 placeholder="john.doe@example.com"
                                                 type="email"
                                             />
@@ -73,6 +84,8 @@ function LoginForm() {
                                         <FormControl>
                                             <Input
                                                 {...field}
+                                                disabled={isPending}
+                                                // Disables input while isPending
                                                 placeholder="********"
                                                 type="password"
                                             />
@@ -84,7 +97,10 @@ function LoginForm() {
                         </div>
                         <FormError message=""/>
                         <FormSuccess message=""/>
-                        <Button type="submit" className="w-full" variant="default">
+                        <Button disabled={isPending} // Disables input while isPending
+                                type="submit" 
+                                className="w-full" 
+                                variant="default">
                             Login
                         </Button>
                     </form>
