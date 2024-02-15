@@ -5,7 +5,7 @@ import React from 'react';
 import { CardWrapper } from '@/components/auth/card-wrapper';
 import{ useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/schemas"; 
+import { RegisterSchema } from "@/schemas"; 
 
 import{
     Form,
@@ -13,41 +13,42 @@ import{
     FormField,
     FormItem,
     FormLabel,
-    FormMessage
+    FormMessage,
 } from "@/components/ui/form"
 import { Input } from "../ui/input";
 import { Button } from "../ui/button"; 
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import { login } from "@/actions/login";
+import { register } from "@/actions/register"; 
 import { useState, useTransition } from "react"; 
 
 // interface Props {}
 
-function LoginForm() {
+function RegisterForm() {
     // const {} = props
 
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
 
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
+    const form = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
             email: "abc@gmail.com",
             password: "password",
+            name: "abc",
         },
     });
 
     // This wil forward the 
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
         setError("");
         setSuccess("");
         
         // console.log(values);
         // Can use axios here...
         startTransition(() => {
-            login(values)
+            register(values)
                 .then((data) => {
                     setError(data.error);
                     setSuccess(data.success);
@@ -57,14 +58,35 @@ function LoginForm() {
 
     return (
         <div>
-            <CardWrapper headerLabel='Welcome Back' backButtonLabel="Don't have an account" 
-            backButtonHref="/auth/register" showSocial = {true}>
+            <CardWrapper 
+                headerLabel="Create an account" 
+                backButtonLabel="Already have an account" 
+                backButtonHref="/auth/login" 
+                showSocial = {true}>
                 <Form {...form}>
                     <form 
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-6"
                     >
                         <div className="space-y-4">
+                            <FormField
+                                control={form.control}   
+                                name="name" 
+                                render = {({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                // Disables input while isPending
+                                                placeholder="john.doe"
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}   
                                 name="email" 
@@ -110,7 +132,7 @@ function LoginForm() {
                                 type="submit" 
                                 className="w-full" 
                                 variant="default">
-                            Login
+                            Register
                         </Button>
                     </form>
                 </Form>
@@ -119,4 +141,4 @@ function LoginForm() {
     );
 }
 
-export {LoginForm}
+export {RegisterForm}
